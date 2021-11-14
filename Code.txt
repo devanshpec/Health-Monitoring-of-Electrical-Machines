@@ -1,0 +1,131 @@
+myFolder = 'D:\exp 23-02-2015\no load i=1.10 (10.15)':
+if ~isdir(myFolder)
+errorMessage = sprintf('Error: The following folder does not exist:\n%s', myFolder); uiwait(warndlg(errorMessage));
+return; end
+
+filePattern = fullfile(myFolder, '*.jpg'); theFiles = dir(filePattern);
+for k = 1 : length(theFiles) baseFileName = theFiles(k).name;
+fullFileName = fullfile(myFolder, baseFileName); fprintf(1, 'Now reading %s\n', fullFileName);
+
+
+im5=imread(fullFileName); im4=im2bw(im5); im6=graythresh(im5);
+
+level=graythresh(im5); display(level);
+T = histeq(im6); display(T);
+I = imread(fullFileName);
+
+
+J = medfilt2(I); R = corr2(I,J); display(R);
+
+drawnow;
+
+
+76
+ 
+end
+
+
+myFolder = 'D:\Devansh\Sudhanshu data\Experiments\exp 23-02-2015\no load i=1.10 (13.30)';
+if ~isdir(myFolder)
+errorMessage = sprintf('Error: The following folder does not exist:\n%s', myFolder); uiwait(warndlg(errorMessage));
+return; end
+% Get a list of all files in the folder with the desired file name pattern. filePattern = fullfile(myFolder, '*.csv'); % Change to whatever pattern you need. theFiles = dir(filePattern);
+for k = 1 : length(theFiles) baseFileName = theFiles(k).name;
+fullFileName = fullfile(myFolder, baseFileName); fprintf(1, 'Now reading %s\n', fullFileName);
+% Now do whatever you want with this file name,
+% such as reading it in as an image array with imread() M=csvread(fullFileName);
+row = size(M, 1); col = size(M,2); maxx=0;
+sum=0;
+for n=1:row for m=1:col
+
+k=M(n,m); sum = sum+k; if(k>maxx)
+maxx=k; end
+end end
+avg=sum/(row*col); display(avg);display(maxx);
+77
+ 
+min=maxx; for j=1:row
+for b=1:col z=M(j,b); if(z<min)
+min=z; end
+end end
+display(min); kk=std(M(:)); display(kk); skw=skewness(M(:)); display(skw); krt=kurtosis(M(:)); display(krt); vr=var(M(:)); display(vr);
+
+drawnow; % Force display to update immediately. end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+78
+ 
+2)	Program for training and testing of classifier Groups = ismember(species,one_label)
+
+%% Randomly select training and test sets. [train, test] = crossvalind('holdOut',groups); cp = classperf(groups);
+
+%% Use the svmtrain function to train an SVM classifier using a radial basis function and plot the grouped data.
+%svmStruct = svmtrain(data(train,:),groups(train),'showplot',true); svmStruct =
+svmtrain(data(train,:),groups(train),'showplot',true,'kernel_function',kernel_function);
+
+
+%% Classify the test set using a support vector machine. classes = svmclassify(svmStruct,data(test,:),'showplot',true);
+
+
+%% Evaluate the performance of the classifier. classperf(cp,classes,test);
+cp.CorrectRate toc;
+x=xlsread('0 degree_2.xlsx'); train=(x(1:8,1:9)); target=x(1:8,10);
+
+
+test=x(17:20,1:9);
+svmstruc=svmtrain(train,target,'kernel_function','polynomial'); output=svmclassify(svmstruc,test);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+79
+ 
+3)	Thresholding Program
+
+function [k]=otsu(a) b=a;
+[c,d]=size(b);
+b=reshape(b,[],1);
+[m,n]=size(b); weightb=zeros(3,256); weightf=zeros(3,256); r=1;
+l=1;
+for T=0:255 [wb,wf,mb,mf,vrb,vrf]=cal(T,b,m); weightb(1,r)=wb; weightb(2,r)=mb; weightb(3,r)=vrb;
+r=r+1; weightf(1,l)=wf; weightf(2,l)=mf; weightf(3,l)=vrf; l=l+1;
+end
+%Within class variance wcv=zeros(1,256);
+for g=1:256 wcv(1,g)=((weightb(1,g)*weightb(3,g))+((weightf(1,g)*weightf(3,g)))); end
+% min(wcv) [threshold_value,val]=min(wcv); tval=(val-1)/256;
+% b=imresize(b,[c d]) a=im2bw(a,tval);
+k= medfilt2(a,[25 25]); end
+
+
